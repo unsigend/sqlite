@@ -15,9 +15,15 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include <shell/shell.h>
+#ifndef SQLITE_SHELL_H
+#define SQLITE_SHELL_H
 
-int main(int argc, char *argv[]){
-    shell_repl();
-    return 0;
-}
+// function declarations
+
+/**
+ * @brief Simple REPL state machine implementation
+ * @details This function implements a simple REPL state machine and run the loop.
+ */
+extern void shell_repl();
+
+#endif

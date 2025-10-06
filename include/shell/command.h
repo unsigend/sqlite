@@ -15,9 +15,21 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include <shell/shell.h>
+#ifndef SQLITE_SHELL_COMMAND_H
+#define SQLITE_SHELL_COMMAND_H
 
-int main(int argc, char *argv[]){
-    shell_repl();
-    return 0;
-}
+// shell command definitions
+#define SQLITE_COMMAND_EXIT ".exit"
+#define SQLITE_COMMAND_HELP ".help"
+#define SQLITE_COMMAND_OPEN ".open"
+
+
+// shell command declarations
+
+/**
+ * @brief Exit the shell
+ * @details This function exits the shell.
+ */
+extern void shell_command_exit();
+
+#endif

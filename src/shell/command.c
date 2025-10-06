@@ -15,21 +15,26 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef SQLITE_SHELL_H
-#define SQLITE_SHELL_H
+#include <stdio.h>
+#include <stdlib.h>
+#include <shell/command.h>
 
-#define SQLITE_SHELL_PROMPT "sqlite > "
+typedef struct {
+    const char * name;
+    const char * description;
+} shell_command_t;
 
-#define SQLITE_COMMAND_EXIT ".exit"
-#define SQLITE_COMMAND_HELP ".help"
-#define SQLITE_COMMAND_OPEN ".open"
+// shell commands constant table
+static shell_command_t shell_commands[] = {
+    {SQLITE_COMMAND_EXIT, "Exit the shell"},
+    {SQLITE_COMMAND_HELP, "Show help"},
+    {SQLITE_COMMAND_OPEN, "Open a database"},
+};
 
-// function declarations
+void shell_command_exit() {
+    exit(EXIT_SUCCESS);
+}
 
-/**
- * @brief Simple REPL state machine implementation
- * @details This function implements a simple REPL state machine and run the loop.
- */
-extern void shell_repl();
+void shell_command_help() {
 
-#endif
+}

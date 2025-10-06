@@ -15,23 +15,28 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include <shell.h>
 #include <stdio.h>
 #include <stdbool.h>
 #include <string.h>
 #include <stdlib.h>
 #include <util/buffer.h>
+#include <shell/command.h>
+#include <shell/shell.h>
 
+#define SQLITE_SHELL_PROMPT "sqlite > "
+
+// print the prompt
 static void shell_print_prompt(){
     fprintf(stdout, SQLITE_SHELL_PROMPT);
 }
 
+// execute the command
 static void shell_execute_command(input_buffer_t* buffer){
     const char* command = input_buffer_get_data(buffer);
 
     if (strcmp(command, SQLITE_COMMAND_EXIT) == 0){
         input_buffer_free(buffer);
-        exit(EXIT_SUCCESS);
+        shell_command_exit();
     }else {
         fprintf(stderr, "Unknown command: %s\n", command);
     }
