@@ -22,6 +22,8 @@
 #include <util/buffer.h>
 #include <shell/command.h>
 #include <shell/shell.h>
+#include <compiler/statement.h>
+#include <compiler/compiler.h>
 
 #define SQLITE_SHELL_PROMPT "sqlite > "
 
@@ -52,7 +54,24 @@ static void shell_execute_command(input_buffer_t* buffer){
                 break;
         }
     }
-    // execute the sql command
+    // execute the sql statement
+    else {
+        statement_t statement;
+        // parse the statement
+        switch (parse_statement(command, &statement)) {
+            case SQLITE_STATEMENT_SUCCESS:
+                break;
+            case SQLITE_STATEMENT_SYNTAX_ERROR:
+                fprintf(stderr, "Syntax error: %s\n", command);
+                break;
+            case SQLITE_STATEMENT_UNRECOGNIZED:
+                fprintf(stderr, "Unrecognized statement: %s\n", command);
+                break;
+        }
+        // compile the statement
+
+        // execute the statement
+    }
 }
 
 /**
