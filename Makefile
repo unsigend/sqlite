@@ -1,5 +1,5 @@
 # sqlite - A rebuild of sqlite core features
-# Copyright (C) 2025 Qiu Yixiang
+# Copyright (C) 2025 Yixiang Qiu
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -37,7 +37,8 @@ CC             	:=          gcc
 CXX             :=          g++
 
 # flags for compiler
-CC_FLAGS        :=          -Wall -Wextra -Werror -Wshadow -Wno-unused-parameter
+CC_FLAGS        :=          -Wall -Wextra -Werror -Wshadow
+CC_FLAGS       	+=          -Wno-unused-parameter -Wno-unused-function
 CC_FLAGS       	+=          -std=c99
 CC_FLAGS        +=          -O2
 CC_FLAGS       	+=          -I$(INCLUDE_PATH)
@@ -51,14 +52,14 @@ $(OBJ_PATH)/%.o: $(SRC_PATH)/%.c
 	@echo " + CC\t$@"
 
 .PHONY: all clean
-.DEFAULT_GOAL := all
+.DEFAULT_GOAL := help
 
 -include $(DEPS)
 
 # all targets
 all: $(OBJS)
 	@$(CC) $(OBJS) -o $(BUILD_PATH)/sqlite
-	@echo " + LD\t$(BUILD_PATH)/sqlite"
+	@echo " + LD\t$(notdir $(BUILD_PATH))/sqlite"
 
 # clean targets
 clean:
