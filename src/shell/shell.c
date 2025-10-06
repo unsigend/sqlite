@@ -30,16 +30,29 @@ static void shell_print_prompt(){
     fprintf(stdout, SQLITE_SHELL_PROMPT);
 }
 
+static void shell_show_info() {
+    fprintf(stdout, "SQLite core version 0.1\n");
+    fprintf(stdout, "Enter \".help\" for usage hints.\n");
+    fprintf(stdout, "Connected to a transient in-memory database.\n");
+    fprintf(stdout, "Use \".open FILENAME\" to open a file database.\n");
+    fprintf(stdout, "Use \".exit\" to quit\n");
+}
+
 // execute the command
 static void shell_execute_command(input_buffer_t* buffer){
     const char* command = input_buffer_get_data(buffer);
 
-    if (strcmp(command, SQLITE_COMMAND_EXIT) == 0){
-        input_buffer_free(buffer);
-        shell_command_exit();
-    }else {
-        fprintf(stderr, "Unknown command: %s\n", command);
+    // execute the meta command
+    if (command[0] == SQLITE_META_COMMAND){
+        switch (shell_meta_command_execute(buffer)) {
+            case SQLITE_META_COMMAND_SUCCESS:
+                break;
+            case SQLITE_META_COMMAND_UNRECOGNIZED:
+                fprintf(stderr, "Unknown command: %s\n", command);
+                break;
+        }
     }
+    // execute the sql command
 }
 
 /**
@@ -47,7 +60,10 @@ static void shell_execute_command(input_buffer_t* buffer){
  */
 void shell_repl(){
     input_buffer_t* buffer = input_buffer_new();
+    // show the info
+    shell_show_info();
 
+    // start the repl loop
     while (true) {
         // print the prompt
         shell_print_prompt();

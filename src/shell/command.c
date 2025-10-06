@@ -16,25 +16,59 @@
  */
 
 #include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
+#include <util/buffer.h>
 #include <shell/command.h>
 
-typedef struct {
-    const char * name;
-    const char * description;
-} shell_command_t;
+#define SQLITE_SPACE_ALIGNMENT 16
 
-// shell commands constant table
-static shell_command_t shell_commands[] = {
-    {SQLITE_COMMAND_EXIT, "Exit the shell"},
-    {SQLITE_COMMAND_HELP, "Show help"},
-    {SQLITE_COMMAND_OPEN, "Open a database"},
+// shell meta command table
+shell_meta_command_t shell_meta_command_table[] = {
+    {SQLITE_META_COMMAND_EXIT, "Exit the shell", shell_meta_command_exit},
+    {SQLITE_META_COMMAND_HELP, "Show help", shell_meta_command_help},
+    {SQLITE_META_COMMAND_OPEN, "Open a database", shell_meta_command_open},
 };
 
-void shell_command_exit() {
+// shell meta command table size
+size_t shell_meta_command_table_size = sizeof(shell_meta_command_table) 
+    / sizeof(shell_meta_command_table[0]);
+
+// exit meta command function
+enum shell_meta_command_result shell_meta_command_exit(input_buffer_t* buffer) {
+    // free the buffer
+    input_buffer_free(buffer);
+    // exit the shell
     exit(EXIT_SUCCESS);
+    return SQLITE_META_COMMAND_SUCCESS;
 }
 
-void shell_command_help() {
+// help meta command function
+enum shell_meta_command_result shell_meta_command_help(input_buffer_t* buffer) {
+    // print the help message with right space alignment
+    for (size_t i = 0; i < shell_meta_command_table_size; i++) {
+        shell_meta_command_t meta_command = shell_meta_command_table[i];
+        fprintf(stdout, "%-*s %s\n", SQLITE_SPACE_ALIGNMENT, meta_command.name, meta_command.description);
+    }
+    
+    return SQLITE_META_COMMAND_SUCCESS;
+}
 
+// open meta command function
+enum shell_meta_command_result shell_meta_command_open(input_buffer_t* buffer) {
+    return SQLITE_META_COMMAND_SUCCESS;
+}
+
+enum shell_meta_command_result 
+    shell_meta_command_execute(input_buffer_t* buffer) {
+    const char* command = input_buffer_get_data(buffer);
+
+    for (size_t i = 0; i < shell_meta_command_table_size; i++) {
+        shell_meta_command_t meta_command = shell_meta_command_table[i];
+        if (strcmp(command, meta_command.name) == 0) {
+            return meta_command.function(buffer);
+        }
+    }
+
+    return SQLITE_META_COMMAND_UNRECOGNIZED;
 }
